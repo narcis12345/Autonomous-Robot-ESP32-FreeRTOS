@@ -1,0 +1,47 @@
+#ifndef CONFIG_H
+#define CONFIG_H
+
+#include "driver/gpio.h"
+
+//Pini motoare
+#define MOTOR_A_INAPOI GPIO_NUM_26 
+#define MOTOR_A_INAINTE GPIO_NUM_27
+#define MOTOR_B_INAPOI GPIO_NUM_21 
+#define MOTOR_B_INAINTE GPIO_NUM_19
+#define ENABLE_MOTOR_A GPIO_NUM_25
+#define ENABLE_MOTOR_B GPIO_NUM_18
+
+//Pini servo
+#define I2C_MASTER_NUM I2C_NUM_0
+#define I2C_MASTER_SDA GPIO_NUM_22
+#define I2C_MASTER_SCL GPIO_NUM_23
+#define I2C_MASTER_FREQ_HZ 100000
+#define PCA9685_ADDR 0x40
+#define SERVO_CANAL_SCANARE 0
+#define SERVO_CANAL_STABILITATE 3
+
+//Pin detector + constante
+#define PIN_SEMNAL_METAL GPIO_NUM_4
+#define NUMAR_CITIRI_PENTRU_CONFIRMARE 10
+#define PRAG_DETECTII_POZITIVE_NECESARE 7
+
+//Constante pentru unghiuri servo
+#define UNGHI_CENTRU 120
+#define UNGHI_STANGA (UNGHI_CENTRU + 90)  
+#define UNGHI_DREAPTA (UNGHI_CENTRU - 90)
+#define UNGHI_STABILITATE 60 
+
+//Constante delay-uri
+#define DELAY_VIRAJ_MS 750
+#define DELAY_MERS_LATERAL_MS 1000
+#define DELAY_STOP_MS 300
+#define DELAY_INTRE_CITIRI_MS 5
+#define DURATA_AVANSARE_NORMAL_MS 1000
+#define DELAY_PAS_SERVO_SCANARE_MS 30
+#define TIMP_DEPLASARE_SIGURANTA_MS 800
+
+//Alte define-uri
+#define BUTON_START GPIO_NUM_0
+#define LED_TEST GPIO_NUM_2
+
+#endif

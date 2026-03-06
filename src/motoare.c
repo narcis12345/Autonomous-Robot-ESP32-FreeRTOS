@@ -1,12 +1,14 @@
 #include "motoare.h"
-#include "driver/gpio.h"
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
-#include "driver/ledc.h"
+#include <driver/gpio.h>
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
+#include <driver/ledc.h>
 #include "utilitare.h"
 #include "config.h"
-#include "esp_log.h"
+#include <esp_log.h>
 #include "comunicare_bluetooth.h"
+
+static const char *TAG_MOTOARE = "MOTOARE_OCOLIRE";
 
 void init_motoare() {
     
@@ -17,11 +19,9 @@ void init_motoare() {
     gpio_set_direction(ENABLE_MOTOR_A, GPIO_MODE_OUTPUT);
     gpio_set_direction(ENABLE_MOTOR_B, GPIO_MODE_OUTPUT);    
 
-
-    // PWM pe ENABLE_A și ENABLE_B
     ledc_timer_config_t pwm_timer = {
-        .duty_resolution = LEDC_TIMER_8_BIT, // rezoluție 0-255
-        .freq_hz = 1000,                     // frecvență PWM: 1kHz
+        .duty_resolution = LEDC_TIMER_8_BIT, 
+        .freq_hz = 1000,                     
         .speed_mode = LEDC_HIGH_SPEED_MODE,
         .timer_num = LEDC_TIMER_0
     };
@@ -107,56 +107,39 @@ void oprire() {
 }
 
 void mers_inainte_controlat(uint32_t durata_ms) {
+
     mers_inainte();
     
-    // În loc de un singur delay mare, facem multe delay-uri mici
-    // și verificăm flag-ul la fiecare pas.
     for (uint32_t i = 0; i < durata_ms; i += 10) {
+
         if (flag_oprire_urgenta) {
-            oprire(); // Oprim imediat ce vedem flag-ul
-            return;  // Și ieșim din funcție
+
+            oprire(); 
+            return;
         }
-        delay_ms(10); // Așteptăm 10ms
+        delay_ms(10);
     }
     
-    oprire(); // Oprim la final, dacă nu a fost nicio urgență
-}
-
-void asteapta_start() {
-
-    gpio_set_direction(BUTON_START, GPIO_MODE_INPUT);
-    gpio_set_pull_mode(BUTON_START, GPIO_PULLUP_ONLY);
-    gpio_set_direction(LED_TEST, GPIO_MODE_OUTPUT);
-
-    printf("se asteapta startul!\n");
-
-    while (gpio_get_level(BUTON_START) == 1) {
-        
-        vTaskDelay(1);
-    }
-
-    printf("START!\n");
-
-    gpio_set_level(LED_TEST, 1);
+    oprire();
 }
 
 void ocolire_prin_stanga() {
     
-    ESP_LOGI("MOTOARE_OCOLIRE", "Ocolire stanga SIMPLA: Pas 1 - Viraj stanga");
-    viraj_stanga(); // Sau viraj_stanga_puternic
-    delay_ms(DELAY_VIRAJ_MS); // Calibrează acest DELAY_VIRAJ_MS
+    ESP_LOGI(TAG_MOTOARE, "Ocolire stanga: Pas 1 - Viraj stanga");
+    viraj_stanga(); 
+    delay_ms(DELAY_VIRAJ_MS); 
     oprire();
     delay_ms(DELAY_STOP_MS);
 
-    ESP_LOGI("MOTOARE_OCOLIRE", "Ocolire stanga SIMPLA: Pas 2 - Mers inainte (lateral)");
+    ESP_LOGI(TAG_MOTOARE, "Ocolire stanga: Pas 2 - Mers inainte (lateral)");
     mers_inainte();
-    delay_ms(DELAY_MERS_LATERAL_MS); // Calibrează acest DELAY_MERS_MS
+    delay_ms(DELAY_MERS_LATERAL_MS);
     oprire();
     delay_ms(DELAY_STOP_MS);
 
-    ESP_LOGI("MOTOARE_OCOLIRE", "Ocolire stanga SIMPLA: Pas 3 - Viraj dreapta");
-    viraj_dreapta(); // Sau viraj_dreapta_puternic
-    delay_ms(DELAY_VIRAJ_MS); // Folosește același DELAY_VIRAJ_MS (sau unul separat calibrat)
+    ESP_LOGI(TAG_MOTOARE, "Ocolire stanga: Pas 3 - Viraj dreapta");
+    viraj_dreapta(); 
+    delay_ms(DELAY_VIRAJ_MS);
     oprire();
     delay_ms(DELAY_STOP_MS);
 }

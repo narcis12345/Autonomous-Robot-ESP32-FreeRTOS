@@ -14,8 +14,6 @@ void viraj_dreapta();
 
 void oprire();
 
-void asteapta_start();
-
 void ocolire_prin_stanga();
 
 #endif

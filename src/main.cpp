@@ -1,6 +1,5 @@
 #include <Arduino.h>
 
-// Definim pinul pentru butonul BOOT (GPIO0)
 #define BOOT_BUTTON_PIN 0
 
 void setup() {
@@ -21,3 +20,4 @@ void loop() {
   delay(500);
 
 }
+
